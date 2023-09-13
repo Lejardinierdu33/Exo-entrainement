@@ -1,13 +1,11 @@
 const express = require('express');
-const { setPosts } = require('../controllers/post.controller');
+const { setPosts, getPosts } = require('../controllers/post.controller');
 const router = express.Router();
 
 
 // les 4 principe de base pour une requete API
 
-router.get ("/", (req, res) => {
-    res.json({message: 'Salut tout le monde'});
-});
+router.get ("/", getPosts);
 
 router.post ("/", setPosts);
 
