@@ -3,6 +3,8 @@ const connectDB = require('./config/db');
 const dotenv = require('dotenv').config();
 const port = 5000;
 
+
+// Apppel BDD
 connectDB();
 
 const app = express();

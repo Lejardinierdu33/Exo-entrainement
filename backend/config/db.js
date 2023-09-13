@@ -1,12 +1,11 @@
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
+    const url = 'mongodb+srv://'+process.env.HOST+'/'+process.env.DB_NAME;
     try {
-        mongoose.set('strictQuery', false);
-        mongoose.connect(process.env.MONGO_URI, () => console.log('Mongo Connecté'))
+        await mongoose.connect(url, { });
     } catch (err) {
-        console.log(err);
-        process.exit();
+        console.log(error);
     }
 };
 
