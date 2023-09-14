@@ -69,3 +69,44 @@ module.exports.dislikePost = async (req, res) => {
       res.status(400).json(err);
     }
   };
+
+
+// Methode GET avec tri par date
+module.exports.getPostsLike = async (req, res) => {
+  let sortBy = '-createdAt'; // Tri par date la plus récente par défaut
+
+  if (req.query.sort === 'likes') {
+    sortBy = '-likers.length'; // Tri par le nombre de likes
+  }
+
+  const posts = await PostModel.find().sort(sortBy);
+  res.status(200).json(posts);
+};
+
+// Methode GET avec tri par ordre alphabétique des auteurs
+module.exports.getPostsAlpha = async (req, res) => {
+  let sortBy = 'author'; // Tri par ordre alphabétique des auteurs par défaut
+
+  if (req.query.sort === 'date') {
+    sortBy = '-createdAt'; // Tri par date la plus récente
+  }
+
+  const posts = await PostModel.find().sort(sortBy);
+  res.status(200).json(posts);
+};
+
+
+// Methode GET pour récupérer les auteurs commençant par "A"
+module.exports.getAuthorsStartingWithA = async (req, res) => {
+  try {
+    const authorsStartingWithA = await PostModel.find({
+      author: /^A/i, // Utilise une expression régulière pour chercher les auteurs commençant par "A" (insensible à la casse)
+    });
+
+    res.status(200).json(authorsStartingWithA);
+  } catch (error) {
+    console.error('Erreur lors de la récupération des auteurs :', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
