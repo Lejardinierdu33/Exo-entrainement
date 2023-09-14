@@ -73,26 +73,34 @@ module.exports.dislikePost = async (req, res) => {
 
 // Methode GET avec tri par date
 module.exports.getPostsLike = async (req, res) => {
-  let sortBy = '-createdAt'; // Tri par date la plus récente par défaut
-
-  if (req.query.sort === 'likes') {
-    sortBy = '-likers.length'; // Tri par le nombre de likes
+  try{
+    const posts = await PostModel.find().lean(); // Convertir les résultats en objets JavaScript purs
+    posts.sort((a, b) => {
+      const numLikersA = a.likers.length;
+      const numLikersB = b.likers.length;
+      return numLikersB - numLikersA;
+    });
+    res.status(200).json(posts);
+  } catch(err) {
+    console.error('Erreur lors de la récupération des auteurs :', error);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
-
-  const posts = await PostModel.find().sort(sortBy);
-  res.status(200).json(posts);
 };
 
 // Methode GET avec tri par ordre alphabétique des auteurs
 module.exports.getPostsAlpha = async (req, res) => {
-  let sortBy = 'author'; // Tri par ordre alphabétique des auteurs par défaut
-
-  if (req.query.sort === 'date') {
-    sortBy = '-createdAt'; // Tri par date la plus récente
+  try {
+    const posts = await PostModel.find().lean(); // Convertir les résultats en objets JavaScript purs
+    posts.sort((a, b) => {
+      const authorA = a.author.toLowerCase();
+      const authorB = b.author.toLowerCase();
+      return authorA.localeCompare(authorB);
+    });
+    res.status(200).json(posts);
+  } catch (err) {
+    console.error('Erreur lors de la récupération des auteurs :', error);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
-
-  const posts = await PostModel.find().sort(sortBy);
-  res.status(200).json(posts);
 };
 
 
